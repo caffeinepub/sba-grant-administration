@@ -1,0 +1,222 @@
+{
+  "kind": "build_request",
+  "title": "SBA Grant Administration — Grant application portal with status tracking and admin dashboard",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Create a public homepage for “SBA Grant Administration” that includes a grant application form collecting: full name, email, country, and requested amount restricted to $5,000–$50,000 (inclusive). Submitting the form must create a new application and return a unique Application ID to the applicant.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Build a professional government-style global grant application website called 'SBA Grant Administration'. It should have: a homepage with an application form collecting full name, email, country, and requested amount ($5,000–$50,000)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Homepage renders an application form with fields: Full name, Email, Country, Requested amount.",
+        "Requested amount cannot be submitted if outside $5,000–$50,000 (inclusive) and shows a clear validation message.",
+        "On successful submission, the backend persists the application with status = Pending.",
+        "The UI displays a newly generated Application ID after submission and provides a clear way to copy it.",
+        "Application ID format is unique and stable for later lookup."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement an applicant status tracker page/section where applicants can enter their Application ID to view current application status. If approved, the tracker must also show the assigned processing fee and payment instructions (based on the receiving account chosen by admin).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "an applicant status tracker using an Application ID",
+          "Approved applicants see their fee and payment instructions."
+        ]
+      },
+      "acceptanceCriteria": [
+        "A status tracker UI exists with an input for Application ID and a submit/search action.",
+        "If Application ID is not found, show a user-friendly error message.",
+        "If found, show status as one of: Pending, Approved, Rejected.",
+        "If status is Approved and a processing fee has been assigned, show the fee amount clearly.",
+        "If status is Approved and a receiving account has been selected, show payment instructions with full relevant account details (bank or crypto).",
+        "If status is Approved but fee and/or account instructions are not yet configured, the UI indicates that instructions are not yet available without exposing admin-only data."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Create backend data models and canister methods to support: creating applications, generating unique Application IDs, retrieving application status by Application ID, listing applications for admin review, and updating applications (approve/reject, assign processing fee, and select receiving account).",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Generate and provide an Application ID for each submission, Applicant status tracker page using Application ID to view application status, Admin dashboard to list/review applications and approve or reject submissions, Admin can set/assign a processing fee per approved application, Admin can create/edit receiving accounts for payments (Bank or Crypto) with full details, Approved applicants can view their assigned processing fee and payment instructions"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes a method to create an application with the required fields and returns the new Application ID.",
+        "Backend enforces requested amount bounds ($5,000–$50,000 inclusive) on create.",
+        "Backend exposes a public method to fetch an application’s public view (status +, if approved, fee + payment instructions) by Application ID.",
+        "Backend exposes admin methods to list applications and update: status (approve/reject), processing fee, and selected receiving account.",
+        "All application records are persisted in canister stable state and survive canister upgrades (no data loss expected for normal rebuilds)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Build an admin dashboard UI to review submitted applications: list and search by Application ID, view full application details, and take actions to approve or reject applications.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "and a backend admin dashboard. Admin can approve/reject applications"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin dashboard page exists with a table/list of applications showing at least: Application ID, applicant name, country, requested amount, status, and submission time (if available).",
+        "Admin can click into an application to view full details (full name, email, country, amount, status).",
+        "Admin can approve an application and see the status update reflected in the UI.",
+        "Admin can reject an application and see the status update reflected in the UI.",
+        "Admin can search/filter by Application ID."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Add admin capabilities to assign a processing fee to an application (as a numeric USD amount) and ensure approved applicants can see the fee in the status tracker once assigned.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "assign a processing fee",
+          "Approved applicants see their fee"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin UI includes an input to set/update a processing fee for a specific application.",
+        "Backend persists the processing fee on the application record.",
+        "Applicant status tracker displays the processing fee when the application is approved and the fee has been set.",
+        "If fee is not set, the applicant tracker does not display a misleading default value."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Implement admin management of receiving accounts used for payment instructions. Admin must be able to create, edit, and select receiving accounts of type Bank or Crypto with full details stored and shown to approved applicants as payment instructions.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "and choose/edit receiving accounts (Bank or Crypto) with full details. Approved applicants see their fee and payment instructions."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin can create a new receiving account of type Bank with fields to capture typical bank transfer details (e.g., bank name, account holder name, account number/IBAN, SWIFT/BIC, bank address, reference/memo instructions).",
+        "Admin can create a new receiving account of type Crypto with fields to capture typical crypto payment details (e.g., network, currency, wallet address, tag/memo if applicable, reference instructions).",
+        "Admin can edit and delete existing receiving accounts.",
+        "Admin can select one receiving account to associate with a specific approved application.",
+        "Applicant status tracker shows the selected account’s details in a clear payment-instructions layout when the application is approved.",
+        "No receiving-account details are shown to applicants unless their application is approved."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Restrict admin dashboard and admin backend methods to authorized administrators only (using Internet Identity authentication), and provide an in-app “Not authorized” state for non-admin users who attempt to access admin pages.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "and a backend admin dashboard. Admin can approve/reject applications"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin pages require the user to be authenticated with Internet Identity.",
+        "Backend checks caller identity for admin-only methods and rejects unauthorized callers.",
+        "Frontend shows a clear “Not authorized” message if a non-admin attempts to access admin UI.",
+        "There is a defined mechanism to configure the initial admin principal(s) (e.g., stored list in backend state)."
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Apply a consistent, official, professional, trustworthy government-style visual theme suitable for a global audience across all pages (public form, status tracker, and admin dashboard), including typography, spacing, and accessible color contrast (avoid blue/purple as primary brand colors).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Design must look official, professional, and trustworthy for a global audience."
+        ]
+      },
+      "acceptanceCriteria": [
+        "UI uses a cohesive government-style theme (e.g., neutral grays, deep green and gold accents, restrained typography) consistently across pages.",
+        "Forms, tables, and status badges are styled professionally with clear hierarchy.",
+        "All critical text meets reasonable contrast/readability expectations.",
+        "No blue/purple is used as the primary theme color."
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Generate and include official-looking static brand assets and wire them into the UI from the frontend public assets folder.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Build a professional government-style global grant application website called 'SBA Grant Administration'.",
+          "Design must look official, professional, and trustworthy for a global audience."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Generated images are saved under frontend/public/assets/generated and referenced directly by the frontend.",
+        "Header/hero uses the generated imagery without fetching it from the backend.",
+        "Assets appear crisp on desktop and mobile layouts."
+      ]
+    }
+  ],
+  "constraints": [
+    "Use English for all user-facing UI text.",
+    "Backend must remain a single Motoko actor (all logic in the main actor).",
+    "Do not edit files under frontend/src/components/ui or any immutable paths listed in SYSTEM_CONTEXT; compose them instead.",
+    "No third-party authentication providers; only Internet Identity for login.",
+    "No external databases or third-party backend services."
+  ],
+  "nonGoals": [
+    "Payment processing/checkout integration (e.g., Stripe, crypto payment confirmation) is out of scope; only display of payment instructions is required.",
+    "Email/SMS notifications to applicants are out of scope.",
+    "Real-time updates (websockets/push) are out of scope; status is retrieved via manual lookup with Application ID.",
+    "Multi-role admin workflows beyond approve/reject/fee/account management are out of scope."
+  ],
+  "imageRequirements": {
+    "required": [
+      "Official-style circular seal emblem with “SBA Grant Administration” text (sba-seal.dim_512x512.png)",
+      "Subtle document-texture header background pattern, light neutral tone (header-pattern.dim_1600x400.png)"
+    ],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [
+      "Build a professional government-style global grant application website called 'SBA Grant Administration' with public application intake, application status tracking via Application ID, and an admin dashboard to approve/reject, set fees, and configure bank/crypto receiving accounts."
+    ],
+    "goalsToRemove": [],
+    "preferencesToAdd": [
+      "Use English for user-facing text.",
+      "Visual design should look official, professional, and trustworthy for a global audience (avoid blue/purple as primary colors)."
+    ],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

@@ -1,0 +1,284 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "SBA Grant Administration — Frontend grant intake, status tracking, and admin dashboard",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Public homepage with grant application form validation, submission, and Application ID display/copy.",
+      "acceptanceCriteria": [
+        "Homepage renders an application form with fields: Full name, Email, Country, Requested amount.",
+        "Requested amount cannot be submitted if outside $5,000–$50,000 (inclusive) and shows a clear validation message.",
+        "The UI displays a newly generated Application ID after submission and provides a clear way to copy it.",
+        "Application ID format is unique and stable for later lookup."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "create",
+          "description": "Create the main app shell with top navigation and hash-based routing to required sections: public application form (home), status tracker, and admin dashboard."
+        },
+        {
+          "path": "frontend/src/pages/Home.tsx",
+          "operation": "create",
+          "description": "Implement the public application form UI (name/email/country/amount) with client-side amount bounds validation (5,000–50,000 inclusive), submit handling, and post-submit success state that shows the returned Application ID with a copy-to-clipboard control."
+        },
+        {
+          "path": "frontend/src/hooks/useApplications.ts",
+          "operation": "create",
+          "description": "Add React Query hooks for creating applications via the backend actor, including loading/error states surfaced to the homepage form."
+        },
+        {
+          "path": "frontend/src/components/layout/SiteHeader.tsx",
+          "operation": "create",
+          "description": "Add a government-style header/hero area to the homepage that includes branding and navigation; wire in the generated seal and header pattern assets. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Fix global CSS import so the app loads the existing Tailwind base styles from the correct path (frontend/index.css) and ensure App renders correctly."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Applicant status tracker where users look up status by Application ID and see fee + payment instructions only when approved and configured.",
+      "acceptanceCriteria": [
+        "A status tracker UI exists with an input for Application ID and a submit/search action.",
+        "If Application ID is not found, show a user-friendly error message.",
+        "If found, show status as one of: Pending, Approved, Rejected.",
+        "If status is Approved and a processing fee has been assigned, show the fee amount clearly.",
+        "If status is Approved and a receiving account has been selected, show payment instructions with full relevant account details (bank or crypto).",
+        "If status is Approved but fee and/or account instructions are not yet configured, the UI indicates that instructions are not yet available without exposing admin-only data."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/StatusTracker.tsx",
+          "operation": "create",
+          "description": "Create the status tracker page/section with Application ID input (numeric), lookup action, and results view that displays status and conditionally displays processing fee + payment instructions only when approved and available."
+        },
+        {
+          "path": "frontend/src/hooks/useApplications.ts",
+          "operation": "modify",
+          "description": "Extend hooks to support status lookup by Application ID and fetching processing fee + payment instructions, including not-found and authorization-safe error handling."
+        },
+        {
+          "path": "frontend/src/components/status/StatusBadge.tsx",
+          "operation": "create",
+          "description": "Add a small reusable status badge component for Pending/Approved/Rejected styling consistent with the government theme. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Status Tracker page into the app navigation and routing so applicants can access it from the header."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Admin dashboard UI to list/search applications, view details, and approve/reject.",
+      "acceptanceCriteria": [
+        "Admin dashboard page exists with a table/list of applications showing at least: Application ID, applicant name, country, requested amount, status, and submission time (if available).",
+        "Admin can click into an application to view full details (full name, email, country, amount, status).",
+        "Admin can approve an application and see the status update reflected in the UI.",
+        "Admin can reject an application and see the status update reflected in the UI.",
+        "Admin can search/filter by Application ID."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/admin/AdminDashboard.tsx",
+          "operation": "create",
+          "description": "Implement the admin dashboard list/search UI with an applications table, row selection, and detail panel/view with approve/reject actions and optimistic refresh via React Query."
+        },
+        {
+          "path": "frontend/src/hooks/useAdmin.ts",
+          "operation": "create",
+          "description": "Add admin-focused React Query hooks for loading the applications list and updating application status; centralize error handling for authorization failures."
+        },
+        {
+          "path": "frontend/src/components/admin/ApplicationTable.tsx",
+          "operation": "create",
+          "description": "Create a table component for admin listing (ID, name, country, requested amount, status, submission time if present) with search/filter by Application ID. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/ApplicationDetail.tsx",
+          "operation": "create",
+          "description": "Create an application detail component showing full fields and action buttons for approve/reject, reusing shared typography and status badge. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Admin Dashboard route into the app and expose it in navigation (visible only when authenticated/admin as appropriate)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Admin can set/update a processing fee for an application; approved applicants see it in the tracker when set.",
+      "acceptanceCriteria": [
+        "Admin UI includes an input to set/update a processing fee for a specific application.",
+        "Applicant status tracker displays the processing fee when the application is approved and the fee has been set.",
+        "If fee is not set, the applicant tracker does not display a misleading default value."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/ApplicationDetail.tsx",
+          "operation": "modify",
+          "description": "Add a processing-fee input (numeric USD) with save/remove controls in the admin application detail view, shown in context of the selected application; ensure validation and clear empty-state behavior. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useAdmin.ts",
+          "operation": "modify",
+          "description": "Add React Query mutations to set and remove processing fee for a given application, and invalidate/refetch relevant admin and public tracker queries after updates."
+        },
+        {
+          "path": "frontend/src/pages/StatusTracker.tsx",
+          "operation": "modify",
+          "description": "Render the processing fee clearly when the application is Approved and the fee exists; otherwise show an 'instructions not yet available' style message without defaulting a value."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Admin can create/edit/delete receiving accounts (Bank/Crypto) and associate one with an approved application; applicants see instructions only when approved.",
+      "acceptanceCriteria": [
+        "Admin can create a new receiving account of type Bank with fields to capture typical bank transfer details (e.g., bank name, account holder name, account number/IBAN, SWIFT/BIC, bank address, reference/memo instructions).",
+        "Admin can create a new receiving account of type Crypto with fields to capture typical crypto payment details (e.g., network, currency, wallet address, tag/memo if applicable, reference instructions).",
+        "Admin can edit and delete existing receiving accounts.",
+        "Admin can select one receiving account to associate with a specific approved application.",
+        "Applicant status tracker shows the selected account’s details in a clear payment-instructions layout when the application is approved.",
+        "No receiving-account details are shown to applicants unless their application is approved."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/admin/ReceivingAccounts.tsx",
+          "operation": "create",
+          "description": "Create an admin receiving-accounts management page/section with create/edit/delete flows for Bank and Crypto account types and a clear presentation of stored details. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/ReceivingAccountForm.tsx",
+          "operation": "create",
+          "description": "Implement a form component that captures Bank vs Crypto details, validates required fields per type, and serializes details into a readable multi-line accountDetails payload for backend storage. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/admin/ApplicationDetail.tsx",
+          "operation": "modify",
+          "description": "Add UI to select an existing receiving account to associate with the currently selected application (only enable association when application is Approved), and show which account is currently assigned. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useAdmin.ts",
+          "operation": "modify",
+          "description": "Add hooks/mutations to load receiving accounts, create/update them, and assign a selected account to an application; ensure relevant query invalidation."
+        },
+        {
+          "path": "frontend/src/pages/StatusTracker.tsx",
+          "operation": "modify",
+          "description": "When status is Approved, display payment instructions layout using the selected receiving account details if available; if not available, show a safe 'not yet available' message; for non-approved statuses, do not render any receiving-account details."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wire the Receiving Accounts admin page into the admin navigation and routing (admin-only access)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Internet Identity authentication for admin pages, admin-only UI guard, and clear Not Authorized state.",
+      "acceptanceCriteria": [
+        "Admin pages require the user to be authenticated with Internet Identity.",
+        "Frontend shows a clear “Not authorized” message if a non-admin attempts to access admin UI."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/auth/LoginButton.tsx",
+          "operation": "create",
+          "description": "Add a login/logout button using the Internet Identity flow provided by the existing auth hook; on logout, clear cached app data with React Query. Verify the authorization component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/auth/AdminGuard.tsx",
+          "operation": "create",
+          "description": "Create an admin route guard that checks authentication and caller role/admin status via backend actor methods and renders either the admin content or a Not Authorized screen. Verify the authorization component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/NotAuthorized.tsx",
+          "operation": "create",
+          "description": "Create an in-app “Not authorized” page/state with clear guidance (e.g., login required or insufficient permissions) and a link back to public sections."
+        },
+        {
+          "path": "frontend/src/hooks/useAuthz.ts",
+          "operation": "create",
+          "description": "Add hooks to fetch caller role/admin status (e.g., getCallerUserRole/isCallerAdmin) and to coordinate loading states so admin pages don’t flash incorrect content. Verify the authorization component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Integrate LoginButton into the header, wrap admin routes with AdminGuard, and ensure non-admin users see NotAuthorized instead of admin UI. Verify the authorization component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Apply an official government-style theme with accessible contrast and no blue/purple as the primary color.",
+      "acceptanceCriteria": [
+        "UI uses a cohesive government-style theme (e.g., neutral grays, deep green and gold accents, restrained typography) consistently across pages.",
+        "Forms, tables, and status badges are styled professionally with clear hierarchy.",
+        "All critical text meets reasonable contrast/readability expectations.",
+        "No blue/purple is used as the primary theme color."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.css",
+          "operation": "modify",
+          "description": "Adjust global CSS variables and base styles to a neutral gray base with deep green primary and gold accent, ensuring readable contrast; keep typography restrained and consistent across public/admin pages."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Align Tailwind theme tokens (primary/accent/chart if used) with the government-style palette (deep green + gold accents) and avoid blue/purple as primary."
+        },
+        {
+          "path": "frontend/src/components/layout/AppLayout.tsx",
+          "operation": "create",
+          "description": "Create a shared layout wrapper that standardizes page spacing, max width, headings, and section styling for a professional government look. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Wrap all pages with the shared AppLayout and ensure consistent typography/spacing for forms, tables, and status sections."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Include generated official-looking brand assets from frontend public assets and use them in the UI.",
+      "acceptanceCriteria": [
+        "Generated images are saved under frontend/public/assets/generated and referenced directly by the frontend.",
+        "Header/hero uses the generated imagery without fetching it from the backend.",
+        "Assets appear crisp on desktop and mobile layouts."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/assets/generated/sba-seal.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the generated official-style circular seal emblem asset at this exact path so the frontend can reference it as a static public asset."
+        },
+        {
+          "path": "frontend/public/assets/generated/header-pattern.dim_1600x400.png",
+          "operation": "create",
+          "description": "Add the generated subtle document-texture header background pattern asset at this exact path so the frontend can reference it as a static public asset."
+        },
+        {
+          "path": "frontend/src/components/layout/SiteHeader.tsx",
+          "operation": "modify",
+          "description": "Reference and render the static assets frontend/public/assets/generated/sba-seal.dim_512x512.png and frontend/public/assets/generated/header-pattern.dim_1600x400.png in the header/hero area (no backend fetch). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Ensure the header/hero is present on required pages (public form, status tracker, admin dashboard) so brand assets are consistently visible."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-08T16:05:02.999Z",
+  "summary": "Diff adds a Motoko backend actor with application creation/listing/status update, plus a React frontend with routing, admin dashboard components, receiving-accounts management UI, Internet Identity auth hooks, and generated-asset usage in the header. Several core requirements are only partially evidenced (notably stable persistence, public-view restrictions, receiving-account deletion, and admin list details like submission time).",
+  "missing_requirements": [
+    {
+      "id": "REQ-3",
+      "requirement": "Persist all application records in canister stable state and survive canister upgrades.",
+      "reason": "Backend snippet shows in-memory `var nextApplicationID` and `let applications = Map.empty...` without any `stable` variables or `preupgrade/postupgrade` handling in the provided diff excerpt.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "requirement": "Expose a public method to fetch an application’s public view (status +, if approved, fee + payment instructions) by Application ID, without exposing admin-only fields.",
+      "reason": "The only shown public query is `getApplicationStatus(applicationID)` returning `?Application`, and `Application` includes `email` (and other full fields). No separate 'public view' type/method is evidenced in the shown backend excerpt.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/hooks/useApplications.ts"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "No receiving-account details are shown to applicants unless their application is approved; if approved but fee/account not configured, indicate instructions not yet available without exposing admin-only data.",
+      "reason": "Backend excerpt exposes `getApplicationStatus` returning full `Application` (including email) regardless of status, and no conditional redaction logic is evidenced. The applicant-facing payment-instructions gating behavior is not evidenced in the diff summary.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Admin can delete existing receiving accounts.",
+      "reason": "Frontend shows create and update flows for receiving accounts, but no delete action is visible in the provided ReceivingAccounts page excerpt, and no delete hook/method is evidenced in the shown parts of `useAdmin.ts`.",
+      "evidence": [
+        "frontend/src/pages/admin/ReceivingAccounts.tsx",
+        "frontend/src/hooks/useAdmin.ts"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Admin dashboard list shows submission time (if available).",
+      "reason": "The admin table headers include ID, Name, Country, Amount, Status only; no submission time column is shown, and the backend `Application` type excerpt has no timestamp field.",
+      "evidence": [
+        "frontend/src/components/admin/ApplicationTable.tsx",
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "User profile management (save/get caller profile) with authorization checks.",
+      "reason": "BuildRequest does not request user profiles; backend adds types and methods for profiles.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "description": "Extra application statuses beyond required (Under Review, Processing, Completed).",
+      "reason": "Spec constrains applicant-visible statuses to Pending/Approved/Rejected; diff adds additional statuses in `ApplicationStatus` and displays them in `StatusBadge`.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend/src/components/status/StatusBadge.tsx"
+      ]
+    },
+    {
+      "description": "Secret-token based access-control initialization via URL parameter `caffeineAdminToken` and calling `_initializeAccessControlWithSecret` from the frontend actor hook.",
+      "reason": "Spec requires a defined mechanism to configure initial admin principals, but does not request URL-secret initialization nor any caffeine-specific token flow.",
+      "evidence": [
+        "frontend/src/hooks/useActor.ts"
+      ]
+    },
+    {
+      "description": "Footer credit/link to caffeine.ai with a heart icon and 'Built with' messaging.",
+      "reason": "Not requested by BuildRequest and is additional user-facing UI content.",
+      "evidence": [
+        "frontend/src/components/layout/SiteFooter.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.66,
+  "changed_files": [
+    "all_files_summary.json",
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/src/App.tsx",
+    "frontend/src/components/admin/ApplicationDetail.tsx",
+    "frontend/src/components/admin/ApplicationTable.tsx",
+    "frontend/src/components/admin/ReceivingAccountForm.tsx",
+    "frontend/src/components/auth/AdminGuard.tsx",
+    "frontend/src/components/auth/LoginButton.tsx",
+    "frontend/src/components/layout/AppLayout.tsx",
+    "frontend/src/components/layout/SiteFooter.tsx",
+    "frontend/src/components/layout/SiteHeader.tsx",
+    "frontend/src/components/status/StatusBadge.tsx",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useAdmin.ts",
+    "frontend/src/hooks/useApplications.ts",
+    "frontend/src/hooks/useAuthz.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/Home.tsx",
+    "frontend/src/pages/NotAuthorized.tsx",
+    "frontend/src/pages/StatusTracker.tsx",
+    "frontend/src/pages/admin/AdminDashboard.tsx",
+    "frontend/src/pages/admin/ReceivingAccounts.tsx",
+    "frontend/src/utils/urlParams.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json"
+  ]
+}
