@@ -7,8 +7,16 @@ import { useIsCallerAdmin } from '../../hooks/useAuthz';
 export default function SiteHeader() {
   const router = useRouterState();
   const { identity } = useInternetIdentity();
-  const { data: isAdmin } = useIsCallerAdmin();
+  const { data: isAdmin, isLoading: isAdminLoading } = useIsCallerAdmin();
   const currentPath = router.location.pathname;
+
+  // Determine if we're on an admin route
+  const isAdminRoute = currentPath.startsWith('/admin');
+  
+  // Show login button if:
+  // 1. User is authenticated (always show logout), OR
+  // 2. User is on an admin route (show login option)
+  const showLoginButton = !!identity || isAdminRoute;
 
   return (
     <header className="border-b bg-card">
@@ -33,34 +41,36 @@ export default function SiteHeader() {
       </div>
 
       <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-1 flex-wrap min-w-0">
             <Link to="/">
-              <Button variant={currentPath === '/' ? 'default' : 'ghost'}>
+              <Button variant={currentPath === '/' ? 'default' : 'ghost'} className="whitespace-nowrap">
                 Apply
               </Button>
             </Link>
             <Link to="/status">
-              <Button variant={currentPath === '/status' ? 'default' : 'ghost'}>
+              <Button variant={currentPath === '/status' ? 'default' : 'ghost'} className="whitespace-nowrap">
                 Check Status
               </Button>
             </Link>
-            {identity && isAdmin && (
+            {identity && isAdmin && !isAdminLoading && (
               <>
                 <Link to="/admin">
-                  <Button variant={currentPath === '/admin' ? 'default' : 'ghost'}>
+                  <Button variant={currentPath === '/admin' ? 'default' : 'ghost'} className="whitespace-nowrap">
                     Dashboard
                   </Button>
                 </Link>
                 <Link to="/admin/accounts">
-                  <Button variant={currentPath === '/admin/accounts' ? 'default' : 'ghost'}>
-                    Accounts
+                  <Button variant={currentPath === '/admin/accounts' ? 'default' : 'ghost'} className="whitespace-nowrap">
+                    Payment Methods
                   </Button>
                 </Link>
               </>
             )}
           </div>
-          <LoginButton />
+          <div className="flex-shrink-0" style={{ minWidth: showLoginButton ? 'auto' : '0' }}>
+            {showLoginButton && <LoginButton />}
+          </div>
         </div>
       </nav>
     </header>

@@ -1,11 +1,15 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 9,
   "summary": "Build 'SBA Grant Administration' — a professional, government-style global grant application website with a public application form, applicant status tracker (via Application ID), and an admin dashboard to review applications, manage processing fees, and configure payment receiving accounts (bank/crypto).",
-  "architectural_notes": [],
-  "known_issues": [],
+  "architectural_notes": [
+    "Public visitors should not see an Admin Login control on the homepage/public site; admin access should be moved to a dedicated /admin route (or otherwise not exposed in the public header) while keeping admin authentication available for authorized users."
+  ],
+  "known_issues": [
+    "Admin login button intermittently disappears on the public/main site, making the site look unreliable/risky to visitors.",
+    "Admin Login button is currently visible to public visitors on the homepage; it should not be exposed in the public UI."
+  ],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Official-style circular seal emblem with “SBA Grant Administration” text (sba-seal.dim_512x512.png)\n- Subtle document-texture header background pattern, light neutral tone (header-pattern.dim_1600x400.png)",
   "existing_features": [
     {
       "id": "feature-create-a-public-homepage-for-sba-grant-administration-that-includes-a-grant-application-form-collecting-full-name-email-country-and-requested-amount-restricted-to-5-000-50-000-inclusive-submitting-the-form-must-create-a-new-application-and-return-a-unique-application-id-to-the-applicant",
@@ -68,6 +72,46 @@
       "title": "Generate and include official-looking static brand assets and wire them into the UI from the frontend public assets folder.",
       "reqIds": [
         "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-header-s-authentication-control-the-admin-login-logout-button-is-always-visible-and-does-not-disappear-on-the-public-main-site-including-during-initial-auth-role-loading-route-changes-and-responsive-layouts",
+      "title": "Ensure the header’s authentication control (the \"Admin Login\" / \"Logout\" button) is always visible and does not disappear on the public/main site, including during initial auth/role loading, route changes, and responsive layouts.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-lightweight-ui-fallback-to-prevent-perceived-disappearing-due-to-asynchronous-admin-status-checks-e-g-when-the-identity-is-present-but-admin-status-is-still-loading-ensuring-the-header-layout-remains-stable",
+      "title": "Add a lightweight UI fallback to prevent perceived \"disappearing\" due to asynchronous admin-status checks (e.g., when the identity is present but admin status is still loading), ensuring the header layout remains stable.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-site-header-so-that-the-admin-login-button-is-not-visible-to-public-visitors-on-public-pages-e-g-the-homepage-and-status-tracker-the-authentication-control-may-still-be-shown-when-the-user-is-already-authenticated-to-allow-logout-and-or-when-the-user-is-on-an-admin-route-so-administrators-have-a-place-to-sign-in",
+      "title": "Update the site header so that the \"Admin Login\" button is not visible to public visitors on public pages (e.g., the homepage and status tracker). The authentication control may still be shown when the user is already authenticated (to allow \"Logout\") and/or when the user is on an /admin route so administrators have a place to sign in.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-admin-ui-wording-to-match-a-simple-admin-portal-concept-rename-user-facing-labels-from-receiving-accounts-to-payment-methods-or-payment-accounts-across-admin-navigation-and-pages-while-keeping-the-existing-admin-accounts-route-unchanged",
+      "title": "Update admin UI wording to match a simple “Admin Portal” concept: rename user-facing labels from “Receiving Accounts” to “Payment Methods” (or “Payment Accounts”) across admin navigation and pages, while keeping the existing /admin/accounts route unchanged.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-obvious-payment-methods-entry-point-inside-the-admin-dashboard-page-so-admins-can-quickly-access-where-they-insert-edit-payment-details-for-fees",
+      "title": "Add an obvious “Payment Methods” entry point inside the Admin Dashboard page so admins can quickly access where they insert/edit payment details for fees.",
+      "reqIds": [
+        "REQ-14"
       ],
       "version": 1
     }

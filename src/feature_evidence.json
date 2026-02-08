@@ -2,103 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-public-homepage-for-sba-grant-administration-that-includes-a-grant-application-form-collecting-full-name-email-country-and-requested-amount-restricted-to-5-000-50-000-inclusive-submitting-the-form-must-create-a-new-application-and-return-a-unique-application-id-to-the-applicant",
-      "featureTitle": "Create a public homepage for “SBA Grant Administration” that includes a grant application form collecting: full name, email, country, and requested amount restricted to $5,000–$50,000 (inclusive). Submitting the form must create a new application and return a unique Application ID to the applicant.",
+      "featureId": "feature-update-admin-ui-wording-to-match-a-simple-admin-portal-concept-rename-user-facing-labels-from-receiving-accounts-to-payment-methods-or-payment-accounts-across-admin-navigation-and-pages-while-keeping-the-existing-admin-accounts-route-unchanged",
+      "featureTitle": "Update admin UI wording to match a simple “Admin Portal” concept: rename user-facing labels from “Receiving Accounts” to “Payment Methods” (or “Payment Accounts”) across admin navigation and pages, while keeping the existing /admin/accounts route unchanged.",
       "files": [
-        "frontend/src/App.tsx",
+        "frontend/src/components/admin/ApplicationDetail.tsx",
         "frontend/src/components/layout/SiteHeader.tsx",
-        "frontend/src/hooks/useApplications.ts",
-        "frontend/src/main.tsx",
-        "frontend/src/pages/Home.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-an-applicant-status-tracker-page-section-where-applicants-can-enter-their-application-id-to-view-current-application-status-if-approved-the-tracker-must-also-show-the-assigned-processing-fee-and-payment-instructions-based-on-the-receiving-account-chosen-by-admin",
-      "featureTitle": "Implement an applicant status tracker page/section where applicants can enter their Application ID to view current application status. If approved, the tracker must also show the assigned processing fee and payment instructions (based on the receiving account chosen by admin).",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/status/StatusBadge.tsx",
-        "frontend/src/hooks/useApplications.ts",
-        "frontend/src/pages/StatusTracker.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-build-an-admin-dashboard-ui-to-review-submitted-applications-list-and-search-by-application-id-view-full-application-details-and-take-actions-to-approve-or-reject-applications",
-      "featureTitle": "Build an admin dashboard UI to review submitted applications: list and search by Application ID, view full application details, and take actions to approve or reject applications.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/admin/ApplicationDetail.tsx",
-        "frontend/src/components/admin/ApplicationTable.tsx",
-        "frontend/src/hooks/useAdmin.ts",
-        "frontend/src/pages/admin/AdminDashboard.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-admin-capabilities-to-assign-a-processing-fee-to-an-application-as-a-numeric-usd-amount-and-ensure-approved-applicants-can-see-the-fee-in-the-status-tracker-once-assigned",
-      "featureTitle": "Add admin capabilities to assign a processing fee to an application (as a numeric USD amount) and ensure approved applicants can see the fee in the status tracker once assigned.",
-      "files": [
-        "frontend/src/components/admin/ApplicationDetail.tsx",
-        "frontend/src/hooks/useAdmin.ts",
-        "frontend/src/pages/StatusTracker.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-admin-management-of-receiving-accounts-used-for-payment-instructions-admin-must-be-able-to-create-edit-and-select-receiving-accounts-of-type-bank-or-crypto-with-full-details-stored-and-shown-to-approved-applicants-as-payment-instructions",
-      "featureTitle": "Implement admin management of receiving accounts used for payment instructions. Admin must be able to create, edit, and select receiving accounts of type Bank or Crypto with full details stored and shown to approved applicants as payment instructions.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/admin/ApplicationDetail.tsx",
-        "frontend/src/components/admin/ReceivingAccountForm.tsx",
-        "frontend/src/hooks/useAdmin.ts",
-        "frontend/src/pages/StatusTracker.tsx",
         "frontend/src/pages/admin/ReceivingAccounts.tsx"
       ],
       "components": [
@@ -110,19 +18,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-6"
+        "REQ-13"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-restrict-admin-dashboard-and-admin-backend-methods-to-authorized-administrators-only-using-internet-identity-authentication-and-provide-an-in-app-not-authorized-state-for-non-admin-users-who-attempt-to-access-admin-pages",
-      "featureTitle": "Restrict admin dashboard and admin backend methods to authorized administrators only (using Internet Identity authentication), and provide an in-app “Not authorized” state for non-admin users who attempt to access admin pages.",
+      "featureId": "feature-add-an-obvious-payment-methods-entry-point-inside-the-admin-dashboard-page-so-admins-can-quickly-access-where-they-insert-edit-payment-details-for-fees",
+      "featureTitle": "Add an obvious “Payment Methods” entry point inside the Admin Dashboard page so admins can quickly access where they insert/edit payment details for fees.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/auth/AdminGuard.tsx",
-        "frontend/src/components/auth/LoginButton.tsx",
-        "frontend/src/hooks/useAuthz.ts",
-        "frontend/src/pages/NotAuthorized.tsx"
+        "frontend/src/pages/admin/AdminDashboard.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -133,49 +37,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-a-consistent-official-professional-trustworthy-government-style-visual-theme-suitable-for-a-global-audience-across-all-pages-public-form-status-tracker-and-admin-dashboard-including-typography-spacing-and-accessible-color-contrast-avoid-blue-purple-as-primary-brand-colors",
-      "featureTitle": "Apply a consistent, official, professional, trustworthy government-style visual theme suitable for a global audience across all pages (public form, status tracker, and admin dashboard), including typography, spacing, and accessible color contrast (avoid blue/purple as primary brand colors).",
-      "files": [
-        "frontend/index.css",
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/AppLayout.tsx",
-        "frontend/tailwind.config.js"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-generate-and-include-official-looking-static-brand-assets-and-wire-them-into-the-ui-from-the-frontend-public-assets-folder",
-      "featureTitle": "Generate and include official-looking static brand assets and wire them into the UI from the frontend public assets folder.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/SiteHeader.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-9"
+        "REQ-14"
       ],
       "confidence": "high"
     }

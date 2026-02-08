@@ -32,6 +32,7 @@ export default function LoginButton() {
       onClick={handleAuth}
       disabled={disabled}
       variant={isAuthenticated ? 'outline' : 'default'}
+      className="whitespace-nowrap flex-shrink-0"
     >
       {disabled ? (
         'Logging in...'

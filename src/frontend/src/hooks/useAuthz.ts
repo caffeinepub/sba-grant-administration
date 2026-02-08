@@ -4,7 +4,7 @@ import { useInternetIdentity } from './useInternetIdentity';
 
 export function useIsCallerAdmin() {
   const { actor, isFetching: actorFetching } = useActor();
-  const { identity } = useInternetIdentity();
+  const { identity, isInitializing } = useInternetIdentity();
 
   return useQuery<boolean>({
     queryKey: ['isCallerAdmin', identity?.getPrincipal().toString()],
@@ -16,7 +16,9 @@ export function useIsCallerAdmin() {
         return false;
       }
     },
-    enabled: !!actor && !actorFetching && !!identity,
+    enabled: !!actor && !actorFetching && !!identity && !isInitializing,
     retry: false,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to reduce flicker
+    initialData: false, // Provide stable default to prevent undefined state
   });
 }

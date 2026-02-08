@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { Link } from '@tanstack/react-router';
 import { useGetAllApplications } from '../../hooks/useAdmin';
 import ApplicationTable from '../../components/admin/ApplicationTable';
 import ApplicationDetail from '../../components/admin/ApplicationDetail';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Wallet } from 'lucide-react';
 import type { Application } from '../../backend';
 
 export default function AdminDashboard() {
@@ -23,9 +26,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="py-8 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Review and manage grant applications</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <p className="text-muted-foreground mt-2">Review and manage grant applications</p>
+        </div>
+        <Link to="/admin/accounts">
+          <Button variant="outline" className="whitespace-nowrap">
+            <Wallet className="h-4 w-4 mr-2" />
+            Payment Methods
+          </Button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

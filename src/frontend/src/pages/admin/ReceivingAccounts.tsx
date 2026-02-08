@@ -38,7 +38,7 @@ export default function ReceivingAccounts() {
       <div className="py-12">
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">Loading accounts...</p>
+            <p className="text-muted-foreground">Loading payment methods...</p>
           </CardContent>
         </Card>
       </div>
@@ -49,19 +49,19 @@ export default function ReceivingAccounts() {
     <div className="py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Receiving Accounts</h1>
-          <p className="text-muted-foreground mt-2">Manage payment receiving accounts</p>
+          <h1 className="text-3xl font-bold">Payment Methods</h1>
+          <p className="text-muted-foreground mt-2">Manage payment accounts for receiving fees</p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              Add Account
+              Add Payment Method
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Create Receiving Account</DialogTitle>
+              <DialogTitle>Create Payment Method</DialogTitle>
               <DialogDescription>Add a new bank or cryptocurrency account for receiving payments</DialogDescription>
             </DialogHeader>
             <ReceivingAccountForm
@@ -108,10 +108,10 @@ export default function ReceivingAccounts() {
       {accounts?.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">No receiving accounts configured yet</p>
+            <p className="text-muted-foreground">No payment methods configured yet</p>
             <Button variant="outline" className="mt-4" onClick={() => setIsCreateOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Create First Account
+              Create First Payment Method
             </Button>
           </CardContent>
         </Card>
@@ -120,8 +120,8 @@ export default function ReceivingAccounts() {
       <Dialog open={!!editingAccount} onOpenChange={(open) => !open && setEditingAccount(null)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Edit Receiving Account</DialogTitle>
-            <DialogDescription>Update account details</DialogDescription>
+            <DialogTitle>Edit Payment Method</DialogTitle>
+            <DialogDescription>Update payment account details</DialogDescription>
           </DialogHeader>
           {editingAccount && (
             <ReceivingAccountForm

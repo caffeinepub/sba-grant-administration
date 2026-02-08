@@ -166,12 +166,12 @@ export default function ApplicationDetail({ application }: ApplicationDetailProp
           <>
             <Separator />
             <div className="space-y-3">
-              <h4 className="font-semibold text-sm">Payment Account</h4>
+              <h4 className="font-semibold text-sm">Payment Method</h4>
               <div className="space-y-2">
-                <Label htmlFor="account">Select Receiving Account</Label>
+                <Label htmlFor="account">Select Payment Method</Label>
                 <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
                   <SelectTrigger id="account">
-                    <SelectValue placeholder="Choose account..." />
+                    <SelectValue placeholder="Choose payment method..." />
                   </SelectTrigger>
                   <SelectContent>
                     {accounts?.map(([id, account]) => (
@@ -187,7 +187,7 @@ export default function ApplicationDetail({ application }: ApplicationDetailProp
                   className="w-full"
                   size="sm"
                 >
-                  Assign Account
+                  Assign Payment Method
                 </Button>
               </div>
             </div>
